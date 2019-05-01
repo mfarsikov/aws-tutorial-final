@@ -2,8 +2,8 @@ awsAccessKeyId:
 awsSecretAccessKey:
 sqsQueueName: queue
 snsTopicName:
-dynamoDbTableName:
-dynamoDbTableAttributeName:
+dynamoDbTableName: 'dynamo-table'
+dynamoDbTableAttributeName: id
 server.port: 80
 myKey: 'yaml'
 cloud.aws.stack.auto: false

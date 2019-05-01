@@ -3,15 +3,15 @@ package com.example.demo
 //import com.amazonaws.auth.AWSStaticCredentialsProvider
 //import com.amazonaws.auth.BasicAWSCredentials
 //import com.amazonaws.regions.Regions
-//import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
-//import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
-//import com.amazonaws.services.dynamodbv2.model.AttributeValue
-//import com.amazonaws.services.dynamodbv2.model.GetItemRequest
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
+import com.amazonaws.services.dynamodbv2.model.AttributeValue
+import com.amazonaws.services.dynamodbv2.model.GetItemRequest
 //import com.amazonaws.services.sns.AmazonSNS
 //import com.amazonaws.services.sns.AmazonSNSClientBuilder
 //import com.amazonaws.services.sns.model.PublishRequest
 //import com.amazonaws.auth.AWSStaticCredentialsProvider
-//import com.amazonaws.auth.BasicAWSCredentials
+import com.amazonaws.auth.BasicAWSCredentials
 //import com.amazonaws.regions.Regions
 import com.amazonaws.services.sqs.AmazonSQS
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder
@@ -42,7 +42,7 @@ fun main(args: Array<String>) {
 
 @RestController
 class Controller(
-//        val ddb: AmazonDynamoDB,
+        val ddb: AmazonDynamoDB,
 //        val snsClient: AmazonSNS,
         val sqs: AmazonSQS,
         val config: Config
@@ -52,10 +52,10 @@ class Controller(
     fun sum(@RequestBody request: CalcRequest): CalcResponse {
         return with(request) {
             sendToSqs("$var1+$var2")
-//            if (isNotStored(name)) {
-//                storeToDynamo(name)
+            if (isNotStored(name)) {
+                storeToDynamo(name)
 //                sendToSns(name)
-//            }
+            }
 
             CalcResponse(var1 + var2, LocalDateTime.now().toString(), ip())
         }
@@ -69,16 +69,16 @@ class Controller(
                 .withMessageBody(message)
         sqs.sendMessage(sendMessageRequest)
     }
-/*
+
     private fun storeToDynamo(name: String) {
-        ddb.putItem(config.dynamoDbTableName, mapOf(config.dynamoDbTableName to AttributeValue(name)))
+        ddb.putItem(config.dynamoDbTableAttributeName, mapOf(config.dynamoDbTableName to AttributeValue(name)))
     }
 
-    private fun sendToSns(name: String) {
-        val topicArn = snsClient.createTopic(config.snsTopicName).topicArn
-        val publishRequest = PublishRequest(topicArn, "From calc: $name")
-        snsClient.publish(publishRequest)
-    }
+//    private fun sendToSns(name: String) {
+//        val topicArn = snsClient.createTopic(config.snsTopicName).topicArn
+//        val publishRequest = PublishRequest(topicArn, "From calc: $name")
+//        snsClient.publish(publishRequest)
+//    }
 
     private fun isNotStored(name: String): Boolean {
 
@@ -88,7 +88,7 @@ class Controller(
 
         return ddb.getItem(request).item.isNotEmpty()
     }
-*/
+
 
     private fun ip() = "127.0.0.1" //todo: calcmodel.ip()
 
@@ -133,13 +133,13 @@ class DynamoConfig {
             .withRegion(Regions.US_EAST_2)
             .build()*/
 
-/*    @Bean
-    fun getDynamoDb(credentials: BasicAWSCredentials) =
-            AmazonDynamoDBClientBuilder.standard()
-                    .withCredentials(AWSStaticCredentialsProvider(credentials))
+    @Bean
+    fun getDynamoDb(/*credentials: BasicAWSCredentials*/) =
+            AmazonDynamoDBClientBuilder.defaultClient()//.standard()
+               /*     .withCredentials(AWSStaticCredentialsProvider(credentials))
                     .withRegion(Regions.US_WEST_2)
-                    .build()
-
+                    .build()*/
+/*
     @Bean
     fun getSnsClient(credentials: BasicAWSCredentials) = AmazonSNSClientBuilder.standard()
             .withCredentials(AWSStaticCredentialsProvider(credentials))

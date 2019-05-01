@@ -5,7 +5,7 @@ provider "aws" {
 resource "aws_s3_bucket" "bucket" {
   bucket = "tutorial-543239584719"
   acl = "public-read"
-  policy =<<EOF
+  policy = <<EOF
 {
   "Version": "2008-10-17",
   "Statement": [{
@@ -25,7 +25,8 @@ resource "aws_instance" "server" {
   ami = "ami-02bcbb802e03574ba"
   instance_type = "t2.micro"
   key_name = "aws"
-  vpc_security_group_ids = ["${aws_security_group.web-server.id}"]
+  vpc_security_group_ids = [
+    "${aws_security_group.web-server.id}"]
   iam_instance_profile = "${aws_iam_instance_profile.instance_profile.name}"
   user_data = "key=value"
 }
@@ -36,7 +37,7 @@ resource "aws_iam_instance_profile" "instance_profile" {
 
 resource "aws_iam_role" "spring-role" {
   name = "spring-role"
-  assume_role_policy =<<EOF
+  assume_role_policy = <<EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -54,7 +55,7 @@ EOF
 
 resource "aws_iam_policy" "allow-all" {
   name = "allow-all"
-  policy =<<EOF
+  policy = <<EOF
 {
     "Version": "2012-10-17",
     "Statement": [
@@ -101,6 +102,18 @@ resource "aws_security_group" "web-server" {
 
 resource "aws_sqs_queue" "queue" {
   name = "queue"
+}
+
+resource "aws_dynamodb_table" "dynamo" {
+  "attribute" {
+    name = "id"
+    type = "S"
+  }
+
+  write_capacity = 5
+  read_capacity = 5
+  hash_key = "id"
+  name = "dynamo-table"
 }
 
 output "server" {
